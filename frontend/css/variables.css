@@ -1,0 +1,29 @@
+/* ─── CSS VARIABLES ─── */
+:root {
+    --crimson: #b91c1c;
+    --crimson-dark: #7f1d1d;
+    --crimson-glow: #ef444430;
+    --wood: #5c3a1e;
+    --wood-light: #7c5132;
+    --cream: #faf8f4;
+    --cream-dark: #f2ede4;
+    --dark: #111111;
+    --dark2: #1c1c1c;
+    --mid: #5a5248;
+    --border: #e2dbd0;
+    --card-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+    --font-display: 'Noto Serif JP', serif;
+    --font-body: 'DM Sans', sans-serif;
+
+    /* Status colours */
+    --status-new: #b91c1c;
+    --status-new-bg: #fef2f2;
+    --status-prep: #b45309;
+    --status-prep-bg: #fffbeb;
+    --status-done: #15803d;
+    --status-done-bg: #f0fdf4;
+    --paid-col: #15803d;
+    --paid-bg: #dcfce7;
+    --unpaid-col: #b91c1c;
+    --unpaid-bg: #fee2e2;
+}
