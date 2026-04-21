@@ -63,7 +63,7 @@ app.use(errorHandler);
 app.listen(PORT, () => {
     console.log(`\n🍜 ═══════════════════════════════════════════════════`);
     console.log(`   01-Wantantan Ramen API Server`);
-    console.log(`   Running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
     console.log(`   API Health: http://localhost:${PORT}/api/health`);
     console.log(`═══════════════════════════════════════════════════════\n`);
 });

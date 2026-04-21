@@ -1,6 +1,6 @@
 import { showToast } from './ui.js';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://isdwantantanramen-production.up.railway.app/api';
 
 /* ─── MENU API ─── */
 export async function getMenu(fetchUnavailable = false) {
@@ -123,7 +123,7 @@ export async function payWithVNPay(orderId, amount) {
         const qrUrl = `https://img.vietqr.io/image/vietinbank-113366668888-compact.jpg?amount=${amount}&addInfo=${orderId}`;
         const qrImg = document.getElementById('qrImage');
         const qrLnk = document.getElementById('qrLink');
-        
+
         if (qrImg) qrImg.src = qrUrl;
         if (qrLnk) qrLnk.href = data.paymentUrl;
 
