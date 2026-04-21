@@ -13,4 +13,13 @@ function errorHandler(err, req, res, next) {
     });
 }
 
-module.exports = errorHandler;
+module.exports = (err, req, res, next) => {
+    console.error("❌ FULL ERROR:", err);
+
+    res.status(500).json({
+        success: false,
+        message: err.message,
+        code: err.code,
+        sqlMessage: err.sqlMessage
+    });
+};
