@@ -14,15 +14,40 @@ export function updateTrackingUI() {
         return;
     }
 
-    activeOrders.sort((a,b) => b.id - a.id).forEach(order => {
+    activeOrders.sort((a, b) => b.id - a.id).forEach(order => {
+        const canCancel = order.status === 'new';
+        const minutesAgo = Math.max(0, Math.round((Date.now() - order.createdAt) / 60000));
+        const timeLabel = minutesAgo === 0 ? 'Just now' : minutesAgo + ' min ago';
+
+        let statusLabel = order.status;
+        if (order.status === 'new')  statusLabel = 'Pending';
+        if (order.status === 'prep') statusLabel = 'Preparing';
+        if (order.status === 'done') statusLabel = 'Ready ✓';
+
         const div = document.createElement('div');
-        div.className = 'status-card';
+        div.className = `status-card status-${order.status === 'prep' ? 'prep' : order.status === 'done' ? 'done' : 'new'}`;
         div.innerHTML = `
-            <div>
-                <div style="font-weight:700; font-size:14px; margin-bottom:4px;">#${order.id} - ${order.item} (x${order.qty})</div>
-                <div style="font-size:11px; color:var(--mid);">${order.notes}</div>
+            <div class="status-card-header">
+                <div class="status-id-badge">Order #${order.id}</div>
+                <div class="status-indicator">
+                    <span class="status-dot ${canCancel || order.status === 'prep' ? 'pulse' : ''}"></span>
+                    ${statusLabel}
+                </div>
             </div>
-            <div class="status-indicator ${order.status}">${order.status}</div>
+            <div class="status-item-details">
+                <div class="status-item-name">${order.item} × ${order.qty}</div>
+                ${order.notes && order.notes !== '—' ? `<div class="status-item-notes">${order.notes}</div>` : ''}
+            </div>
+            <div class="status-card-controls">
+                <button class="status-cancel-btn" ${!canCancel ? 'disabled' : ''}
+                    onclick="window.confirmCancelOrder(${order.id})">
+                    Cancel Order
+                </button>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; border-top:1px dashed var(--border); padding-top:8px;">
+                <div class="time-chip">${timeLabel}</div>
+                <div style="font-size:10px; color:var(--mid); text-transform:uppercase; letter-spacing:0.5px;">Table ${order.table}</div>
+            </div>
         `;
         container.appendChild(div);
     });

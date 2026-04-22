@@ -98,7 +98,7 @@ window.addEventListener('load', async () => {
 
         if (isDataPageActive) {
             await syncOrders();
-            if (statusPage && statusPage.classList.contains('active')) updateOrderStatusUI();
+            if (statusPage && statusPage.classList.contains('active')) updateTrackingUI();
             if (adminPage && adminPage.classList.contains('active')) updateKitchenUI();
             if (deliveryPage && deliveryPage.classList.contains('active')) updateDeliveryUI();
             if (kitchenQueuePage && kitchenQueuePage.classList.contains('active') && !isKitchenModalOpen()) updateKitchenQueueUI();
