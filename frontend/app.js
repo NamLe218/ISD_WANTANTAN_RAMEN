@@ -1,7 +1,7 @@
 import { setOrders, incrementNextOrderId, syncOrders, syncMenu, setCart } from './js/state.js';
 import { showPage, showToast } from './js/ui.js';
 import { openSheetForItem, changeSheetQty, changeSheetQtyRamen, confirmSheet, closeSheet, openRamen, openRamenFromHome, chooseSingle, toggleTopping, addMenuItem, openEditFromCart, openEditForExistingOrder, changeCartQty, removeCartItem, confirmOrder, processOrder, completeQrPayment, closeQrModal } from './js/cart.js';
-import { checkAdminAccess, updateOrderStatus, renderKitchen as updateKitchenUI } from './js/admin.js';
+import { checkAdminAccess, updateOrderStatus, renderKitchen as updateKitchenUI, toggleStock } from './js/admin.js';
 import { markAsDelivered, renderDeliveryBoard as updateDeliveryUI } from './js/delivery.js';
 import { confirmCancelOrder, closeCancelModal, executeCancelOrder } from './js/ui.js';
 import { acknowledgeOrder, updateQueueOrderStatus, openKitchenOrderDetail, closeKitchenOrderDetail, renderKitchenQueue as updateKitchenQueueUI } from './js/kitchen.js';
@@ -43,6 +43,7 @@ window.confirmOrder = confirmOrder;
 window.completeQrPayment = completeQrPayment;
 window.closeQrModal = closeQrModal;
 window.updateOrderStatus = updateOrderStatus;
+window.toggleStock = toggleStock;
 window.openEditForExistingOrder = openEditForExistingOrder;
 window.confirmCancelOrder = confirmCancelOrder;
 window.closeCancelModal = closeCancelModal;

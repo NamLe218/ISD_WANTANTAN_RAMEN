@@ -144,15 +144,15 @@
     </div>
 
     <!-- ADDED CANCEL MODAL BACK (crucial for modular UI) -->
-    <div class="order-confirm-backdrop" id="orderCancelBackdrop"></div>
+    <div class="order-confirm-backdrop" id="orderCancelBackdrop" onclick="closeCancelModal()"></div>
     <div class="order-confirm-modal" id="orderCancelModal" role="dialog" aria-modal="true"
         aria-labelledby="orderCancelTitle">
         <div class="divider-kanji">⚠</div>
         <h3 id="orderCancelTitle">Cancel this order?</h3>
         <p>This action cannot be undone. You will lose the items in this order.</p>
         <div class="order-confirm-actions">
-            <button class="order-confirm-btn" id="orderCancelYes" style="background:var(--crimson);">Yes, Cancel</button>
-            <button class="order-cancel-btn" id="orderCancelNo">No</button>
+            <button class="order-confirm-btn" id="orderCancelYes" style="background:var(--crimson);" onclick="executeCancelOrder()">Yes, Cancel</button>
+            <button class="order-cancel-btn" id="orderCancelNo" onclick="closeCancelModal()">No</button>
         </div>
     </div>
 

@@ -134,6 +134,16 @@ export function renderKitchen() {
                 const isJustAdded = (Date.now() - order.createdAt) < 3000;
                 const highlightClass = isJustAdded ? 'highlight' : '';
 
+                // Determine next action button
+                let nextBtn = '';
+                if (normStatus === 'new') {
+                    nextBtn = `<button class="order-action-btn prep-btn" onclick="updateOrderStatus(${order.id}, 'prep')">▶ Start Prep</button>`;
+                } else if (normStatus === 'prep') {
+                    nextBtn = `<button class="order-action-btn done-btn" onclick="updateOrderStatus(${order.id}, 'done')">✓ Mark Done</button>`;
+                } else {
+                    nextBtn = `<span class="order-completed-label">✔ Completed</span>`;
+                }
+
                 const card = document.createElement('div');
                 card.className = `order-card status-${normStatus} ${highlightClass}`;
                 card.innerHTML = `
@@ -151,11 +161,7 @@ export function renderKitchen() {
                         : ''}
           <div class="order-footer">
             <span class="badge-pay ${paidClass}" style="font-size:10px;">${paidLabel}</span>
-            <select class="status-select" onchange="updateOrderStatus(${order.id}, this.value)">
-              <option value="new"  ${normStatus === 'new' ? 'selected' : ''}>🔴 New Order</option>
-              <option value="prep" ${normStatus === 'prep' ? 'selected' : ''}>🟡 In Preparation</option>
-              <option value="done" ${normStatus === 'done' ? 'selected' : ''}>🟢 Completed</option>
-            </select>
+            ${nextBtn}
           </div>
           <div class="time-chip">${timeLabel}</div>`;
 

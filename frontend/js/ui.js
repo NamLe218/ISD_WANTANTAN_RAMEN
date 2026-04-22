@@ -196,13 +196,13 @@ let cancelOrderId = -1;
 
 export function confirmCancelOrder(orderId) {
     cancelOrderId = orderId;
-    document.getElementById('cancelModalBackdrop').classList.add('show');
-    document.getElementById('cancelModal').classList.add('show');
+    document.getElementById('orderCancelBackdrop').classList.add('show');
+    document.getElementById('orderCancelModal').classList.add('show');
 }
 
 export function closeCancelModal() {
-    document.getElementById('cancelModalBackdrop').classList.remove('show');
-    document.getElementById('cancelModal').classList.remove('show');
+    document.getElementById('orderCancelBackdrop').classList.remove('show');
+    document.getElementById('orderCancelModal').classList.remove('show');
 }
 
 export async function executeCancelOrder() {
@@ -212,7 +212,8 @@ export async function executeCancelOrder() {
         showToast('Order cancelled');
         closeCancelModal();
         await syncOrders();
-        renderOrderStatus();
+        const { updateTrackingUI } = await import('./tracking.js');
+        updateTrackingUI();
     } else {
         showToast('Failed to cancel order', true);
     }

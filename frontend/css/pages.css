@@ -936,18 +936,40 @@
 }
 
 .inv-toggle {
-    padding: 4px 10px;
-    font-size: 10px;
-    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 8px;
     cursor: pointer;
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     background: white;
+    font-family: var(--font-body);
+    transition: all 0.18s;
+    min-width: 100px;
+    text-align: center;
+    pointer-events: auto;
+    z-index: 1;
+    position: relative;
+}
+
+.inv-toggle:hover {
+    background: var(--cream-dark);
+    border-color: #bbb;
+}
+
+.inv-toggle:active {
+    transform: scale(0.97);
 }
 
 .inv-toggle.unavailable {
     background: var(--crimson);
     color: white;
     border-color: var(--crimson);
+}
+
+.inv-toggle.unavailable:hover {
+    background: #a01515;
+    border-color: #a01515;
 }
 
 @keyframes highlight-new {
@@ -957,4 +979,52 @@
 
 .order-card.highlight {
     animation: highlight-new 2.5s ease-out;
+}
+
+/* ─── KITCHEN ORDER ACTION BUTTONS (click-through, not select) ─── */
+.order-action-btn {
+    flex: 1;
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    font-family: var(--font-body);
+    transition: all 0.18s;
+    white-space: nowrap;
+}
+
+.order-action-btn.prep-btn {
+    background: var(--status-prep-bg);
+    color: var(--status-prep);
+    border: 1.5px solid #fcd34d;
+}
+
+.order-action-btn.prep-btn:hover {
+    background: #fef3c7;
+    box-shadow: 0 2px 8px rgba(180,83,9,0.2);
+    transform: translateY(-1px);
+}
+
+.order-action-btn.done-btn {
+    background: var(--status-done-bg);
+    color: var(--status-done);
+    border: 1.5px solid #86efac;
+}
+
+.order-action-btn.done-btn:hover {
+    background: #dcfce7;
+    box-shadow: 0 2px 8px rgba(21,128,61,0.2);
+    transform: translateY(-1px);
+}
+
+.order-completed-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--status-done);
+    background: var(--status-done-bg);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #86efac;
 }
