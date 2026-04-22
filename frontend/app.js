@@ -1,7 +1,7 @@
 import { setOrders, incrementNextOrderId, syncOrders, syncMenu, setCart } from './js/state.js';
 import { showPage, showToast } from './js/ui.js';
 import { openSheetForItem, changeSheetQty, changeSheetQtyRamen, confirmSheet, closeSheet, openRamen, openRamenFromHome, chooseSingle, toggleTopping, addMenuItem, openEditFromCart, openEditForExistingOrder, changeCartQty, removeCartItem, confirmOrder, processOrder, completeQrPayment, closeQrModal } from './js/cart.js';
-import { checkAdminAccess, updateOrderStatus, renderKitchen as updateKitchenUI, toggleStock } from './js/admin.js';
+import { checkAdminAccess, updateOrderStatus, renderKitchen as updateKitchenUI, toggleStock, applyStockVisuals } from './js/admin.js';
 import { markAsDelivered, renderDeliveryBoard as updateDeliveryUI } from './js/delivery.js';
 import { confirmCancelOrder, closeCancelModal, executeCancelOrder } from './js/ui.js';
 import { acknowledgeOrder, updateQueueOrderStatus, openKitchenOrderDetail, closeKitchenOrderDetail, renderKitchenQueue as updateKitchenQueueUI, isKitchenModalOpen, updateStatusFromModal } from './js/kitchen.js';
@@ -79,9 +79,10 @@ updateClock();
 /* ─── INITIALIZATION ─── */
 window.addEventListener('load', async () => {
     // Hydrate state from Backend
-    await syncMenu();
+    await syncMenu(true);
     await syncOrders();
     import('./js/ui.js').then(ui => ui.renderMenu());
+    applyStockVisuals(); // Apply overlays to hardcoded home page cards
 
     // Auto-refresh logic for real-time updates
     setInterval(async () => {

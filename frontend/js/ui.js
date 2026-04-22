@@ -46,10 +46,10 @@ export async function showPage(name, linkEl) {
     window.scrollTo(0, 0);
 
     // Sync from server for data-driven pages
-    if (['admin-dash', 'status', 'delivery', 'kitchen', 'menu'].includes(name)) {
-        if (name === 'menu') {
-            await syncMenu();
-            renderMenu();
+    if (['admin-dash', 'status', 'delivery', 'kitchen', 'menu', 'home'].includes(name)) {
+        if (name === 'menu' || name === 'home') {
+            await syncMenu(true);
+            if (name === 'menu') renderMenu();
         }
         if (name === 'admin-dash') await syncMenu(true);
         await syncOrders();
@@ -66,8 +66,11 @@ export async function showPage(name, linkEl) {
     }
     if (name === 'delivery') renderDeliveryBoard();
     if (name === 'kitchen') renderKitchenQueue();
-    if (name === 'menu') renderMenu();
-    if (name === 'home') renderPopularDishes();
+    if (name === 'home') {
+        renderPopularDishes();
+        // Apply overlays to hardcoded home-page cards after menu data is fresh
+        import('./admin.js').then(a => a.applyStockVisuals());
+    }
 }
 
 /* ─── HOME UI ─── */
