@@ -594,6 +594,63 @@
             /* Since showToast loads asynchronously, app.js logic now handles this logic reliably */
         }
     </script>
+
+    <!-- ─── KITCHEN ORDER DETAIL MODAL (Ticket View) ─── -->
+    <div class="kitchen-modal-backdrop" id="ktModalBackdrop" onclick="closeKitchenOrderDetail()"></div>
+    <div class="kitchen-modal" id="ktModal">
+        <div class="kitchen-ticket-header">
+            <div>
+                <div class="kt-id-large" id="ktId">#—</div>
+                <div class="kt-table-large" id="ktTable">TABLE —</div>
+            </div>
+            <button class="sheet-close" onclick="closeKitchenOrderDetail()" style="color:white; border-color:#444;">✕</button>
+        </div>
+
+        <div class="kitchen-ticket-body">
+            <!-- Quantity + Item -->
+            <div class="kt-section">
+                <div class="kt-label">Order</div>
+                <div class="kt-qty-hero">
+                    <span id="ktQty">1</span>
+                    <span id="ktItemName">—</span>
+                </div>
+            </div>
+
+            <!-- Ramen specs (hidden for non-ramen) -->
+            <div class="kt-section" id="ktCoreSpecsContainer" style="display:none;">
+                <div class="kt-label">Customisation</div>
+                <div class="kt-specs-grid" id="ktSpecsGrid"></div>
+            </div>
+
+            <!-- Toppings (hidden when empty) -->
+            <div class="kt-section" id="ktToppingsContainer" style="display:none;">
+                <div class="kt-label">Extra Toppings</div>
+                <div class="kt-toppings-list" id="ktToppingsList"></div>
+            </div>
+
+            <!-- Notes / raw text -->
+            <div class="kt-section">
+                <div class="kt-label">Notes</div>
+                <div class="kt-notes-box" id="ktNotes">No specific notes.</div>
+            </div>
+
+            <!-- Status action buttons -->
+            <div class="kt-section">
+                <div class="kt-label">Update Status</div>
+                <div style="display:flex; gap:10px; margin-top:4px;">
+                    <button class="order-action-btn prep-btn" style="flex:1; padding:12px; font-size:13px;"
+                        onclick="window._ktUpdateStatus('prep')">▶ Start Preparation</button>
+                    <button class="order-action-btn done-btn" style="flex:1; padding:12px; font-size:13px;"
+                        onclick="window._ktUpdateStatus('done')">✓ Mark as Done</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="kitchen-ticket-footer">
+            <button class="kt-close-btn" onclick="closeKitchenOrderDetail()">Close Ticket</button>
+        </div>
+    </div>
+
 </body>
 
 </html>

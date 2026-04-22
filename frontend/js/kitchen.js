@@ -2,6 +2,12 @@ import { orders, setOrders, syncOrders } from './state.js';
 import { showToast, normalizeStatus } from './ui.js';
 import { patchOrderStatus } from './api.js';
 
+let _currentKtOrderId = null; // Track which order the detail modal is showing
+
+export function isKitchenModalOpen() {
+    return _currentKtOrderId !== null;
+}
+
 export function renderKitchenQueue() {
     // Map to Spring 2 Kanban columns
     const cols = {
@@ -102,6 +108,8 @@ export function openKitchenOrderDetail(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
 
+    _currentKtOrderId = orderId;
+
     // Acknowledge automatically when opening detail
     acknowledgeOrder(orderId);
 
@@ -166,8 +174,23 @@ export function openKitchenOrderDetail(orderId) {
 }
 
 export function closeKitchenOrderDetail() {
+    _currentKtOrderId = null;
     document.getElementById('ktModalBackdrop').classList.remove('show');
     document.getElementById('ktModal').classList.remove('show');
+}
+
+// Called by the modal's status buttons (window._ktUpdateStatus)
+export async function updateStatusFromModal(newStatus) {
+    if (!_currentKtOrderId) return;
+    const result = await patchOrderStatus(_currentKtOrderId, newStatus);
+    if (result.success) {
+        closeKitchenOrderDetail();
+        await syncOrders();
+        renderKitchenQueue();
+        showToast(newStatus === 'done' ? `Order #${_currentKtOrderId} completed! ✓` : `Order #${_currentKtOrderId} is now being prepared`);
+    } else {
+        showToast('Failed to update status', true);
+    }
 }
 
 export async function updateQueueOrderStatus(orderId, newStatus) {

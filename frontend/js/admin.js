@@ -37,18 +37,18 @@ export function renderAdminInventory() {
 export async function toggleStock(itemName) {
     const item = menu.find(m => m.name === itemName);
     if (!item) return;
-    const newStatus = item.is_available ? 0 : 1;
+    const newStatus = item.is_available ? false : true;  // send actual boolean
     
     const { patchMenuAvailability } = await import('./api.js');
     const { syncMenu } = await import('./state.js');
     const { renderMenu } = await import('./ui.js');
     
-    const success = await patchMenuAvailability(item.id, newStatus);
-    if (success) {
+    const result = await patchMenuAvailability(item.id, newStatus);
+    if (result && result.success) {
         await syncMenu(true);
         renderAdminInventory();
         renderMenu(); // Safely rewrites DOM using true backend state
-        showToast(`${itemName} status updated`);
+        showToast(`${itemName} marked as ${newStatus ? 'Available' : 'Out of Stock'}`);
     } else {
         showToast(`Failed to update ${itemName}`, true);
     }

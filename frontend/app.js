@@ -4,7 +4,7 @@ import { openSheetForItem, changeSheetQty, changeSheetQtyRamen, confirmSheet, cl
 import { checkAdminAccess, updateOrderStatus, renderKitchen as updateKitchenUI, toggleStock } from './js/admin.js';
 import { markAsDelivered, renderDeliveryBoard as updateDeliveryUI } from './js/delivery.js';
 import { confirmCancelOrder, closeCancelModal, executeCancelOrder } from './js/ui.js';
-import { acknowledgeOrder, updateQueueOrderStatus, openKitchenOrderDetail, closeKitchenOrderDetail, renderKitchenQueue as updateKitchenQueueUI } from './js/kitchen.js';
+import { acknowledgeOrder, updateQueueOrderStatus, openKitchenOrderDetail, closeKitchenOrderDetail, renderKitchenQueue as updateKitchenQueueUI, isKitchenModalOpen, updateStatusFromModal } from './js/kitchen.js';
 import { cancelOrder, updateTrackingUI, checkOrderStatuses } from './js/tracking.js';
 
 /* ─── ATTACH TO WINDOW FOR HTML ONCLICK ─── */
@@ -19,6 +19,7 @@ window.cancelOrder = cancelOrder;
 
 window.closeKitchenOrderDetail = closeKitchenOrderDetail;
 window.updateQueueOrderStatus = updateQueueOrderStatus;
+window._ktUpdateStatus = updateStatusFromModal;
 window.setFilter = (btn) => {
     document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -99,7 +100,7 @@ window.addEventListener('load', async () => {
             if (statusPage && statusPage.classList.contains('active')) updateOrderStatusUI();
             if (adminPage && adminPage.classList.contains('active')) updateKitchenUI();
             if (deliveryPage && deliveryPage.classList.contains('active')) updateDeliveryUI();
-            if (kitchenQueuePage && kitchenQueuePage.classList.contains('active')) updateKitchenQueueUI();
+            if (kitchenQueuePage && kitchenQueuePage.classList.contains('active') && !isKitchenModalOpen()) updateKitchenQueueUI();
         }
     }, 5000); // Check every 5 seconds
 
