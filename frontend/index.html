@@ -16,8 +16,9 @@
 
 <body>
 
+    <div class="toast-backdrop" id="toastBackdrop"></div>
     <div class="toast" id="toast">
-        <span id="toastIcon">✓</span>
+        <div id="toastIcon">✓</div>
         <span id="toastMsg">Added to order!</span>
     </div>
 
@@ -191,15 +192,15 @@
                 </div>
                 <div class="hero-stats" aria-label="Hero stats">
                     <div class="hero-stat">
-                        <div class="hero-stat-num">12</div>
+                        <div class="hero-stat-num" id="statDishes">—</div>
                         <div class="hero-stat-label">Dishes</div>
                     </div>
                     <div class="hero-stat">
-                        <div class="hero-stat-num">3</div>
+                        <div class="hero-stat-num" id="statRamen">—</div>
                         <div class="hero-stat-label">Ramen</div>
                     </div>
                     <div class="hero-stat">
-                        <div class="hero-stat-num">4.9</div>
+                        <div class="hero-stat-num">4.9★</div>
                         <div class="hero-stat-label">Rating</div>
                     </div>
                 </div>
@@ -214,77 +215,11 @@
             <div class="divider-kanji">一</div>
             <h2 class="section-title">Popular Dishes</h2>
             <p class="section-sub">Tap any ramen bowl to customise noodle type, firmness, saltiness, and toppings.</p>
-            <div class="menu-grid">
-
-                <div class="menu-card" onclick="openRamenFromHome('Original Tonkotsu')">
-                    <div class="card-ribbon">Main · Ramen</div>
-                    <div class="customise-badge">✦ Customise</div>
-                    <img src="https://images.unsplash.com/photo-1638866281450-3933540af86a?q=80&w=800&auto=format&fit=crop"
-                        alt="Original Tonkotsu">
-                    <div class="menu-card-body">
-                        <div class="menu-card-top">
-                            <div>
-                                <div class="menu-card-name">Original Tonkotsu</div>
-                                <div class="menu-card-cat">Main · Ramen</div>
-                            </div>
-                            <div class="menu-card-price">129.000đ<span> / bowl</span></div>
-                        </div>
-                        <div class="menu-card-desc">Rich pork broth with chashu, soft-boiled egg, and scallions.</div>
-                    </div>
-                </div>
-
-                <div class="menu-card" onclick="openRamenFromHome('Shoyu Ramen')">
-                    <div class="card-ribbon">Main · Ramen</div>
-                    <div class="customise-badge">✦ Customise</div>
-                    <img src="https://images.unsplash.com/photo-1707322467700-945f9bef9c58?q=80&w=800&auto=format&fit=crop"
-                        alt="Shoyu Ramen">
-                    <div class="menu-card-body">
-                        <div class="menu-card-top">
-                            <div>
-                                <div class="menu-card-name">Shoyu Ramen</div>
-                                <div class="menu-card-cat">Main · Ramen</div>
-                            </div>
-                            <div class="menu-card-price">139.000đ<span> / bowl</span></div>
-                        </div>
-                        <div class="menu-card-desc">Soy-based broth with tender chashu and nori.</div>
-                    </div>
-                </div>
-
-                <div class="menu-card" onclick="openRamenFromHome('Spicy Miso Ramen')">
-                    <div class="card-ribbon">Main · Ramen</div>
-                    <div class="customise-badge">✦ Customise</div>
-                    <img src="https://images.unsplash.com/photo-1772217261042-0175d0b2fcb0?q=80&w=800&auto=format&fit=crop"
-                        alt="Spicy Miso Ramen">
-                    <div class="menu-card-body">
-                        <div class="menu-card-top">
-                            <div>
-                                <div class="menu-card-name">Spicy Miso Ramen</div>
-                                <div class="menu-card-cat">Main · Ramen</div>
-                            </div>
-                            <div class="menu-card-price">139.000đ<span> / bowl</span></div>
-                        </div>
-                        <div class="menu-card-desc">Miso broth, chili oil, sweet corn, bamboo shoots.</div>
-                    </div>
-                </div>
-
-                <div class="menu-card" onclick="addMenuItem('Gyoza (5 pcs)')">
-                    <div class="card-ribbon">Side · Dumplings</div>
-                    <img src="https://images.unsplash.com/photo-1738681336104-608b4e7dc3b0?q=80&w=800&auto=format&fit=crop"
-                        alt="Gyoza">
-                    <div class="menu-card-body">
-                        <div class="menu-card-top">
-                            <div>
-                                <div class="menu-card-name">Gyoza (5 pcs)</div>
-                                <div class="menu-card-cat">Side · Dumplings</div>
-                            </div>
-                            <div class="menu-card-price">69.000đ<span> / plate</span></div>
-                        </div>
-                        <div class="menu-card-desc">Pan-fried dumplings served with tare dipping sauce.</div>
-                    </div>
-                </div>
-
+            <div class="menu-grid" id="popularGrid">
+                <!-- Populated dynamically by renderPopularDishes() -->
             </div>
         </div>
+
 
         <footer>
             <div>
@@ -466,18 +401,27 @@
     </div>
 
     <div class="page" id="page-admin-dash">
-        <div class="section" style="max-width: 600px;">
+        <div class="section" style="max-width: 1100px;">
             <div class="divider-kanji">⚙</div>
             <h2 class="section-title">Admin Dashboard</h2>
-            <p class="section-sub">Manage menu availability</p>
-            
-            <div class="pay-card" id="inventoryList" style="margin-bottom: 20px;">
-                </div>
-            
-            <button class="order-now" onclick="showPage('kitchen', document.querySelector('.nav-links a:nth-child(5)'))">Go to Kitchen Display</button>
-            <button class="back-btn" onclick="showPage('home', document.querySelector('.nav-links a:nth-child(1)'))">Return Home</button>
+            <p class="section-sub">Manage menu availability — tap a card to toggle stock status</p>
+
+            <div class="inv-filter-tabs" id="invFilterTabs">
+                <button class="inv-filter-tab active" data-cat="all" onclick="filterInventory(this)">All</button>
+                <button class="inv-filter-tab" data-cat="mains" onclick="filterInventory(this)">Ramen</button>
+                <button class="inv-filter-tab" data-cat="sides" onclick="filterInventory(this)">Sides</button>
+                <button class="inv-filter-tab" data-cat="drinks" onclick="filterInventory(this)">Drinks</button>
+            </div>
+
+            <div class="inv-grid" id="inventoryList"></div>
+
+            <div style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">
+                <button class="order-now" onclick="showPage('kitchen', document.querySelector('.nav-links a:nth-child(5)'))">Go to Kitchen Display</button>
+                <button class="back-btn" onclick="showPage('home', document.querySelector('.nav-links a:nth-child(1)'))">Return Home</button>
+            </div>
         </div>
     </div>
+
 
     <div class="page" id="page-kitchen">
 

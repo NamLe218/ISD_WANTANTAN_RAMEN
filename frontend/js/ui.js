@@ -27,12 +27,17 @@ export function normalizeStatus(s) {
 /* ─── TOAST ─── */
 export function showToast(msg, isError) {
     const t = document.getElementById('toast');
+    const backdrop = document.getElementById('toastBackdrop');
     if (!t) return;
     document.getElementById('toastMsg').textContent = msg;
     document.getElementById('toastIcon').textContent = isError ? '✕' : '✓';
     t.classList.toggle('error', !!isError);
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
+    if (backdrop) backdrop.classList.add('show');
+    setTimeout(() => {
+        t.classList.remove('show');
+        if (backdrop) backdrop.classList.remove('show');
+    }, 2800);
 }
 
 /* ─── PAGE NAVIGATION ─── */
@@ -48,10 +53,10 @@ export async function showPage(name, linkEl) {
     // Sync from server for data-driven pages
     if (['admin-dash', 'status', 'delivery', 'kitchen', 'menu', 'home'].includes(name)) {
         if (name === 'menu' || name === 'home') {
-            await syncMenu(true);
+            await syncMenu();          // customers only see available items
             if (name === 'menu') renderMenu();
         }
-        if (name === 'admin-dash') await syncMenu(true);
+        if (name === 'admin-dash') await syncMenu(true); // admin sees all items
         await syncOrders();
     }
 
@@ -93,7 +98,8 @@ export function renderPopularDishes() {
 
         card.innerHTML = `
             ${isUnavailable ? '<div class="out-of-stock-overlay"><div class="out-of-stock-badge">Out of Stock</div></div>' : ''}
-            <img src="${item.image_url || 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800'}" alt="${item.name}">
+            <img src="${item.image_url || 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800'}" alt="${item.name}"
+                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552611052-33e04de081de?w=800'; this.title='Image failed to load';">
             <div class="menu-card-body">
                 <div class="menu-card-top">
                     <div>
@@ -107,6 +113,14 @@ export function renderPopularDishes() {
         `;
         grid.appendChild(card);
     });
+
+    // Update hero stats from live menu data
+    const totalDishes = menu.length;
+    const totalRamen  = menu.filter(item => item.is_ramen).length;
+    const elDishes = document.getElementById('statDishes');
+    const elRamen  = document.getElementById('statRamen');
+    if (elDishes) elDishes.textContent = totalDishes;
+    if (elRamen)  elRamen.textContent  = totalRamen;
 }
 
 /* ─── MENU UI ─── */
@@ -133,7 +147,8 @@ export function renderMenu() {
 
         card.innerHTML = `
             ${isUnavailable ? '<div class="out-of-stock-overlay"><div class="out-of-stock-badge">Out of Stock</div></div>' : ''}
-            <img src="${item.image_url || 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800'}" alt="${item.name}">
+            <img src="${item.image_url || 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800'}" alt="${item.name}"
+                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1552611052-33e04de081de?w=800'; this.title='Image failed to load';">
             <div class="menu-card-body">
                 <div class="menu-card-top">
                     <div>

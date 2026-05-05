@@ -53,6 +53,16 @@ window.selectPay = (el) => {
     document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('active'));
     el.classList.add('active');
 };
+window.filterInventory = (btn) => {
+    document.querySelectorAll('.inv-filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('#inventoryList .inv-card').forEach(card => {
+        const itemCat = (card.dataset.cat || '').toLowerCase();
+        card.style.display = (cat === 'all' || itemCat === cat) ? '' : 'none';
+    });
+};
+
 
 setInterval(checkOrderStatuses, 1000);
 
@@ -79,8 +89,19 @@ updateClock();
 /* ─── INITIALIZATION ─── */
 window.addEventListener('load', async () => {
     // Hydrate state from Backend
-    await syncMenu(true);
-    await syncOrders();
+    try {
+        await syncMenu(true);
+    } catch (err) {
+        console.error('Failed to load main menu:', err);
+        showToast('Failed to load main menu. Please refresh the page.', true);
+    }
+
+    try {
+        await syncOrders();
+    } catch (err) {
+        console.error('Failed to load orders:', err);
+    }
+
     import('./js/ui.js').then(ui => ui.renderMenu());
     applyStockVisuals(); // Apply overlays to hardcoded home page cards
 

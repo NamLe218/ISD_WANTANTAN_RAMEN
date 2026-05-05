@@ -133,23 +133,47 @@ export function resetSheetDefaults(ramen) {
 export function updateSheetPrice() {
     const el = document.getElementById('sheetPriceLine');
     if (!el) return;
-    const base = PRICES[sheetItemName] || 0;
-    if (isRamenItem(sheetItemName)) {
-        const toppings = document.querySelectorAll('#sheetRamen .opt-btn.toggle.active').length;
-        el.textContent = formatVND((base + toppings * TOPPING_PRICE) * sheetRamenQty);
-    } else {
-        el.textContent = formatVND(base * sheetQtyValue);
+    try {
+        const base = PRICES[sheetItemName] || 0;
+        if (isRamenItem(sheetItemName)) {
+            const toppings = document.querySelectorAll('#sheetRamen .opt-btn.toggle.active').length;
+            el.textContent = formatVND((base + toppings * TOPPING_PRICE) * sheetRamenQty);
+        } else {
+            el.textContent = formatVND(base * sheetQtyValue);
+        }
+    } catch (err) {
+        console.error('Failed to update price after selection:', err);
+        el.textContent = '—';
+        showToast('Failed to update price. Please try again.', true);
     }
 }
 
 export function changeSheetQty(delta) {
-    sheetQtyValue = Math.max(1, sheetQtyValue + delta);
+    const newQty = sheetQtyValue + delta;
+    if (newQty < 1) {
+        showToast('Minimum quantity is 1.', true);
+        return;
+    }
+    if (newQty > 10) {
+        showToast('Maximum quantity is 10.', true);
+        return;
+    }
+    sheetQtyValue = newQty;
     document.getElementById('sheetQty').textContent = String(sheetQtyValue);
     updateSheetPrice();
 }
 
 export function changeSheetQtyRamen(delta) {
-    sheetRamenQty = Math.max(1, sheetRamenQty + delta);
+    const newQty = sheetRamenQty + delta;
+    if (newQty < 1) {
+        showToast('Minimum quantity is 1.', true);
+        return;
+    }
+    if (newQty > 10) {
+        showToast('Maximum quantity is 10.', true);
+        return;
+    }
+    sheetRamenQty = newQty;
     document.getElementById('sheetRamenQtyNum').textContent = String(sheetRamenQty);
     updateSheetPrice();
 }
@@ -157,6 +181,30 @@ export function changeSheetQtyRamen(delta) {
 export async function confirmSheet() {
     const ramen = isRamenItem(sheetItemName);
     const qty = ramen ? sheetRamenQty : sheetQtyValue;
+
+    // ── Validate quantity ───────────────────────────────────────────
+    if (qty < 1 || qty > 10) {
+        showToast('Invalid quantity — please enter a value between 1 and 10.', true);
+        return;
+    }
+
+    // ── Validate ramen customisation is not left empty ───────────────
+    if (ramen) {
+        const missingGroups = [];
+        document.querySelectorAll('#sheetRamen .option-buttons').forEach(group => {
+            const key = group.dataset.key;
+            if (key === 'toppings') return; // toppings are optional
+            const active = group.querySelector('.opt-btn.active');
+            if (!active) missingGroups.push(key);
+        });
+        if (missingGroups.length > 0) {
+            const label = missingGroups
+                .map(k => k.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()))
+                .join(', ');
+            showToast(`Please select an option for: ${label}.`, true);
+            return;
+        }
+    }
 
     if (sheetMode === 'modify') {
         let updateData = { qty };

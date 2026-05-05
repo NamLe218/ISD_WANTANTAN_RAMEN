@@ -8,9 +8,14 @@ export async function getMenu(fetchUnavailable = false) {
         const url = fetchUnavailable ? `${API_BASE}/menu?all=true` : `${API_BASE}/menu`;
         const res = await fetch(url);
         const data = await res.json();
-        return data.success ? data.data : [];
+        if (!data.success) {
+            showToast('Failed to load menu. Please try again.', true);
+            return [];
+        }
+        return data.data;
     } catch (err) {
         console.error('Menu fetch failed:', err);
+        showToast('Failed to load menu — check your connection.', true);
         return [];
     }
 }
@@ -34,7 +39,11 @@ export async function fetchAllOrders(params = {}) {
         const query = new URLSearchParams(params).toString();
         const res = await fetch(`${API_BASE}/orders?${query}`);
         const data = await res.json();
-        return data.success ? data.data : [];
+        if (!data.success) {
+            console.error('Orders fetch returned failure:', data.message);
+            return [];
+        }
+        return data.data;
     } catch (err) {
         console.error('Orders fetch failed:', err);
         return [];

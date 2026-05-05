@@ -1,6 +1,8 @@
-import { orders, trackedOrderIds, notifiedOrders, setTrackedOrderIds } from './state.js';
-import { showToast, showPage } from './ui.js';
+import { orders, trackedOrderIds, notifiedOrders, setTrackedOrderIds, menu, PRICES } from './state.js';
+import { showToast, showPage, formatVND } from './ui.js';
 import { renderKitchen } from './admin.js';
+
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800';
 
 export function updateTrackingUI() {
     const container = document.getElementById('statusListContainer');
@@ -20,52 +22,74 @@ export function updateTrackingUI() {
         const timeLabel = minutesAgo === 0 ? 'Just now' : minutesAgo + ' min ago';
 
         let statusLabel = order.status;
-        if (order.status === 'new')  statusLabel = 'Pending';
-        if (order.status === 'prep') statusLabel = 'Preparing';
-        if (order.status === 'done') statusLabel = 'Ready ✓';
+        let statusClass = 'new';
+        if (order.status === 'new')  { statusLabel = 'Pending';    statusClass = 'new'; }
+        if (order.status === 'prep') { statusLabel = 'Preparing';  statusClass = 'prep'; }
+        if (order.status === 'done') { statusLabel = 'Ready ✓';   statusClass = 'done'; }
+
+        // Look up item image from menu state
+        const menuItem = menu.find(m => m.name === order.item);
+        const imgSrc = (menuItem && menuItem.image_url) ? menuItem.image_url : FALLBACK_IMG;
+        const itemPrice = menuItem ? formatVND(menuItem.price * order.qty) : '';
 
         const div = document.createElement('div');
-        div.className = `status-card status-${order.status === 'prep' ? 'prep' : order.status === 'done' ? 'done' : 'new'}`;
+        div.className = `status-card status-${statusClass}`;
         div.innerHTML = `
-            <div class="status-card-header">
-                <div class="status-id-badge">Order #${order.id}</div>
-                <div class="status-indicator">
-                    <span class="status-dot ${canCancel || order.status === 'prep' ? 'pulse' : ''}"></span>
-                    ${statusLabel}
+            <div class="status-card-img-wrap">
+                <img class="status-card-img"
+                     src="${imgSrc}"
+                     alt="${order.item}"
+                     onerror="this.onerror=null; this.src='${FALLBACK_IMG}';">
+                <div class="status-card-img-overlay">
+                    <span class="status-card-qty-badge">× ${order.qty}</span>
+                    <span class="status-card-status-badge status-badge-${statusClass}">
+                        <span class="status-dot ${canCancel || order.status === 'prep' ? 'pulse' : ''}"></span>
+                        ${statusLabel}
+                    </span>
                 </div>
             </div>
-            <div class="status-item-details">
-                <div class="status-item-name">${order.item} × ${order.qty}</div>
-                ${order.notes && order.notes !== '—' ? `<div class="status-item-notes">${order.notes}</div>` : ''}
-            </div>
-            <div class="status-card-controls">
-                <button class="status-cancel-btn" ${!canCancel ? 'disabled' : ''}
-                    onclick="window.confirmCancelOrder(${order.id})">
-                    Cancel Order
-                </button>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; border-top:1px dashed var(--border); padding-top:8px;">
-                <div class="time-chip">${timeLabel}</div>
-                <div style="font-size:10px; color:var(--mid); text-transform:uppercase; letter-spacing:0.5px;">Table ${order.table}</div>
+            <div class="status-card-body">
+                <div class="status-card-header">
+                    <div class="status-id-badge">Order #${order.id}</div>
+                    <div class="status-card-time">${timeLabel} · Table ${order.table}</div>
+                </div>
+                <div class="status-item-details">
+                    <div class="status-item-name">${order.item}</div>
+                    ${order.notes && order.notes !== '—' ? `<div class="status-item-notes">${order.notes}</div>` : ''}
+                    ${itemPrice ? `<div class="status-item-price">${itemPrice}</div>` : ''}
+                </div>
+                <div class="status-card-controls">
+                    <button class="status-cancel-btn" ${!canCancel ? 'disabled' : ''}
+                        onclick="window.confirmCancelOrder(${order.id})">
+                        Cancel Order
+                    </button>
+                </div>
             </div>
         `;
         container.appendChild(div);
     });
 }
 
+
 export function checkOrderStatuses() {
-    // Check if tracked orders need notifications
     trackedOrderIds.forEach(id => {
         const order = orders.find(o => o.id === id);
         if (order && order.status === 'done' && !notifiedOrders.has(id)) {
-            showToast(`🍜 Your ${order.item} is ready for collection!`, false);
-            notifiedOrders.add(id);
-            if(document.getElementById('page-status').classList.contains('active')) {
-                updateTrackingUI();
+            // Only toast if orders have been loaded at least once (prevents stale
+            // notifications firing immediately on page load for already-done orders)
+            if (checkOrderStatuses._initialised) {
+                showToast(`🍜 Your ${order.item} is ready for collection!`, false);
+                if (document.getElementById('page-status').classList.contains('active')) {
+                    updateTrackingUI();
+                }
             }
+            notifiedOrders.add(id);
         }
     });
+    // After first pass, mark as initialised — future done transitions will toast
+    checkOrderStatuses._initialised = true;
 }
+
 
 export function cancelOrder(id) {
     const order = orders.find(o => o.id === id);
