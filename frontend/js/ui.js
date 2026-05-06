@@ -47,6 +47,7 @@ export async function showPage(name, linkEl) {
     if (targetPage) targetPage.classList.add('active');
     
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.mobile-nav-links a').forEach(a => a.classList.remove('active'));
     if (linkEl) linkEl.classList.add('active');
     window.scrollTo(0, 0);
 
