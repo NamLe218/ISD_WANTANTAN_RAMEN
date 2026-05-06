@@ -175,10 +175,138 @@
 .cart-layout {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 28px 20px 44px;
-    max-width: 900px;
+    gap: 24px;
+    padding: 20px 16px 44px;
+    max-width: 960px;
     margin: 0 auto;
+    width: 100%;
+    align-items: start;
+}
+
+/* Table wrapper — allows horizontal scroll as last resort on tiny screens */
+.cart-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 14px;
+}
+
+/* ── Mobile: reflow table into stacked cards ── */
+@media (max-width: 640px) {
+    /* Hide header row */
+    .cart-table thead {
+        display: none;
+    }
+
+    /* Each body row becomes a card */
+    .cart-table tbody tr {
+        display: block;
+        background: white;
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* Each cell becomes a flex row: label left, value right */
+    .cart-table tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 0;
+        border: none;
+        font-size: 13px;
+    }
+
+    /* data-label pseudo-element */
+    .cart-table tbody td[data-label]::before {
+        content: attr(data-label);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--mid);
+        flex-shrink: 0;
+        margin-right: 12px;
+    }
+
+    /* Hide the desktop-only customisation column; it's already shown inline in the Item cell */
+    .cart-td-notes {
+        display: none;
+    }
+
+    /* Show the mobile notes that are nested inside the Item cell */
+    .cart-notes-mobile {
+        display: block;
+        font-size: 11px;
+        color: var(--mid);
+        margin-top: 3px;
+        line-height: 1.5;
+    }
+
+    /* Remove button cell — right-align it */
+    .cart-table tbody td:last-child {
+        justify-content: flex-end;
+        padding-top: 10px;
+        border-top: 1px dashed var(--border);
+        margin-top: 4px;
+    }
+    .cart-table tbody td:last-child::before {
+        display: none; /* no label for the remove button */
+    }
+
+    /* tfoot total row: simple full-width bar */
+    .cart-table tfoot {
+        display: block;
+        background: var(--dark2);
+        border-radius: 12px;
+        margin-top: 4px;
+    }
+    .cart-table tfoot tr {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+    }
+    .cart-table tfoot td {
+        display: none; /* hide all by default */
+        border: none;
+        padding: 0;
+    }
+    /* Show only the label cell and the price cell */
+    .cart-table tfoot td[colspan] {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: #aaa;
+        text-align: left;
+    }
+    .cart-total-price {
+        display: block !important;
+        font-size: 20px !important;
+        font-weight: 800;
+        color: #c8a27a;
+        text-align: right;
+    }
+    /* Hide the empty last td */
+    .cart-table tfoot td:last-child {
+        display: none !important;
+    }
+}
+
+/* ── Tablet+: 2-column layout ── */
+@media (min-width: 768px) {
+    .cart-layout {
+        grid-template-columns: 1fr 320px;
+        padding: 32px 28px 52px;
+        gap: 28px;
+    }
+}
+
+@media (min-width: 960px) {
+    .cart-layout {
+        grid-template-columns: 1fr 360px;
+    }
 }
 
 /* ─── STATUS PAGE REFINEMENTS ─── */
@@ -1079,9 +1207,18 @@
 .status-indicator.prep { background: var(--status-prep-bg); color: var(--status-prep); }
 .status-indicator.done { background: var(--status-done-bg); color: var(--status-done); }
 
+/* Login card inner wrapper */
+.admin-login-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
 .admin-login-box {
     max-width: 360px;
-    margin: 100px auto;
+    width: calc(100% - 40px);
+    margin: clamp(32px, 10vh, 100px) auto;
     background: var(--dark2);
     padding: 30px;
     border-radius: 16px;
@@ -1092,12 +1229,21 @@
 .admin-input {
     width: 100%;
     padding: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     background: #222;
     border: 1px solid #444;
     color: white;
     border-radius: 8px;
     font-family: var(--font-body);
+    /* Prevent iOS Safari auto-zoom on focus */
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.admin-input:focus {
+    border-color: var(--crimson);
+    box-shadow: 0 0 0 3px var(--crimson-glow);
 }
 
 .inv-item {
@@ -1203,19 +1349,30 @@
 }
 
 /* ─── ADMIN INVENTORY GRID ─── */
+
+/* Filter bar — mirrors .menu-filters */
+.admin-filters {
+    display: flex;
+    justify-content: center;
+    padding: 20px 20px 8px;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+}
+
 .inv-filter-tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
     background: var(--dark2);
     border-radius: 14px;
     padding: 5px;
     border: 1px solid #333;
-    width: fit-content;
-    margin: 0 auto 28px;
+    max-width: 100%;
 }
 
 .inv-filter-tab {
-    padding: 8px 20px;
+    padding: 8px 16px;
     border-radius: 10px;
     font-size: 12px;
     font-weight: 600;
@@ -1224,6 +1381,7 @@
     cursor: pointer;
     color: #888;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .inv-filter-tab.active {
@@ -1238,9 +1396,20 @@
 
 .inv-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    /* 1 column on very small screens, mirrors menu-grid starting at 2 */
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 16px;
+    /* Same side padding as .menu-grid so edges line up */
+    padding: 16px 20px 36px;
+    max-width: 1100px;
+    margin: 0 auto;
     width: 100%;
+}
+
+@media (min-width: 420px) {
+    .inv-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (min-width: 680px) {
@@ -1252,7 +1421,29 @@
 @media (min-width: 960px) {
     .inv-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+        padding: 16px 36px 44px;
     }
+}
+
+/* Action buttons below the grid */
+.admin-dash-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 0 20px 36px;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.admin-dash-actions .order-now {
+    flex: 1;
+    min-width: 200px;
+}
+
+.admin-dash-actions .back-btn {
+    flex: 1;
+    min-width: 140px;
 }
 
 /* Card */
@@ -1280,7 +1471,8 @@
 .inv-card-img-wrap {
     position: relative;
     width: 100%;
-    height: 160px;
+    /* Slightly shorter on mobile to keep cards compact */
+    height: clamp(110px, 22vw, 160px);
     overflow: hidden;
     flex-shrink: 0;
 }

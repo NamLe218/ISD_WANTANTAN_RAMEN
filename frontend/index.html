@@ -351,12 +351,16 @@
     
     <div class="page" id="page-order">
 
+        <!-- Page header — consistent with other pages -->
+        <div class="section" style="padding-bottom: 0;">
+            <div class="divider-kanji">三</div>
+            <h2 class="section-title">Review Your Order</h2>
+            <p class="section-sub">Check your items, adjust quantities, then choose a payment method.</p>
+        </div>
+
         <div class="cart-layout">
 
-            <div>
-                <div class="order-banner" role="banner">
-                    <div class="order-banner-title">Review Your Order</div>
-                </div>
+            <div class="cart-table-wrap">
                 <table class="cart-table" id="cartTableWrapper">
                     <thead>
                         <tr>
@@ -380,8 +384,7 @@
                     </tbody>
                     <tfoot>
                         <tr class="cart-total-row">
-                            <td colspan="2"></td>
-                            <td style="text-align:right; font-weight:700;">Total:</td>
+                            <td colspan="3" style="text-align:right; font-weight:700;">Total:</td>
                             <td class="cart-total-price" id="cartTotal">0đ</td>
                             <td></td>
                         </tr>
@@ -449,33 +452,53 @@
     </div>
 
     <div class="page" id="page-admin-login">
-        <div class="admin-login-box">
-            <h2 style="color:white; font-family:var(--font-display); margin-bottom:20px;">Staff Access</h2>
-            <input type="password" class="admin-input" id="staffPin" placeholder="Enter PIN (Demo: 1234)">
-            <button class="hero-btn" style="width:100%" onclick="checkAdminAccess()">Login</button>
+        <div class="section" style="max-width: 480px;">
+            <div class="divider-kanji">⚙</div>
+            <h2 class="section-title">Staff Access</h2>
+            <p class="section-sub">Enter your staff PIN to manage inventory and view the kitchen display.</p>
+            <div class="admin-login-card">
+                <input type="password" class="admin-input" id="staffPin" placeholder="Enter PIN (Demo: 1234)"
+                       onkeydown="if(event.key==='Enter') checkAdminAccess()">
+                <button class="order-now" onclick="checkAdminAccess()">Login →</button>
+            </div>
         </div>
     </div>
 
     <div class="page" id="page-admin-dash">
-        <div class="section" style="max-width: 1100px;">
+
+        <!-- Page header — same pattern as Menu page -->
+        <div class="section" style="padding-bottom: 0;">
             <div class="divider-kanji">⚙</div>
             <h2 class="section-title">Admin Dashboard</h2>
-            <p class="section-sub">Manage menu availability — tap a card to toggle stock status</p>
+            <p class="section-sub">Manage menu availability — tap a card to toggle stock status.</p>
+        </div>
 
+        <!-- Filter bar — same position as .menu-filters -->
+        <div class="admin-filters">
             <div class="inv-filter-tabs" id="invFilterTabs">
                 <button class="inv-filter-tab active" data-cat="all" onclick="filterInventory(this)">All</button>
                 <button class="inv-filter-tab" data-cat="mains" onclick="filterInventory(this)">Ramen</button>
                 <button class="inv-filter-tab" data-cat="sides" onclick="filterInventory(this)">Sides</button>
                 <button class="inv-filter-tab" data-cat="drinks" onclick="filterInventory(this)">Drinks</button>
             </div>
-
-            <div class="inv-grid" id="inventoryList"></div>
-
-            <div style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">
-                <button class="order-now" onclick="showPage('kitchen', document.querySelector('.nav-links a:nth-child(5)'))">Go to Kitchen Display</button>
-                <button class="back-btn" onclick="showPage('home', document.querySelector('.nav-links a:nth-child(1)'))">Return Home</button>
-            </div>
         </div>
+
+        <!-- Inventory grid — same level as .menu-grid -->
+        <div class="inv-grid" id="inventoryList"></div>
+
+        <!-- Action buttons -->
+        <div class="admin-dash-actions">
+            <button class="order-now" onclick="showPage('kitchen', document.querySelector('.nav-links a:nth-child(5)'))">Go to Kitchen Display</button>
+            <button class="back-btn" onclick="showPage('home', document.querySelector('.nav-links a:nth-child(1)'))">Return Home</button>
+        </div>
+
+        <footer>
+            <div><h4>Management</h4><a href="#">Stock Control</a><a href="#">Sales Report</a></div>
+            <div><h4>Kitchen</h4><a href="#">Kitchen Display</a><a href="#">Shift Settings</a></div>
+            <div><h4>System</h4><a href="#">Logout</a><a href="#">Help</a></div>
+        </footer>
+        <div class="footer-bottom">© 2026 01-WANTANTAN RAMEN — Admin Panel</div>
+
     </div>
 
 
