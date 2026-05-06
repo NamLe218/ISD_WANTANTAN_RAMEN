@@ -23,7 +23,7 @@ export function renderKitchenQueue() {
 
     // Clear all existing contents natively
     Object.values(cols).forEach(col => col && (col.innerHTML = ''));
-    
+
     // Default trackers
     const counts = { 'drinks-new': 0, 'drinks-prep': 0, 'drinks-done': 0, 'food-new': 0, 'food-prep': 0, 'food-done': 0 };
 
@@ -35,7 +35,7 @@ export function renderKitchenQueue() {
     sortedOrders.forEach(order => {
         const normStatus = normalizeStatus(order.status);
         const type = order.type === 'drinks' ? 'drinks' : 'food';
-        
+
         const colId = `${type}-${normStatus}`;
         if (!cols[colId]) return;
 
@@ -48,9 +48,9 @@ export function renderKitchenQueue() {
         const card = document.createElement('div');
         card.className = `kitchen-queue-card ${order.isNewArrival ? 'attention' : ''} status-${normStatus}`;
         card.onclick = () => window.openKitchenOrderDetail(order.id);
-        
-        const payBadge = order.paymentStatus === 'paid' 
-            ? '<span class="badge-pay paid">PAID</span>' 
+
+        const payBadge = order.paymentStatus === 'paid'
+            ? '<span class="badge-pay paid">PAID</span>'
             : '<span class="badge-pay unpaid">UNPAID</span>';
 
         card.innerHTML = `
@@ -121,10 +121,10 @@ export function openKitchenOrderDetail(orderId) {
     const specsGrid = document.getElementById('ktSpecsGrid');
     const toppingsList = document.getElementById('ktToppingsList');
     const notesBox = document.getElementById('ktNotes');
-    
+
     specsGrid.innerHTML = '';
     toppingsList.innerHTML = '';
-    
+
     // Parse ramen notes if they exist (format: "Noodles: X · Firmness: Y · Saltiness: Z · Toppings: A, B")
     if (order.notes && order.notes.includes(' · ')) {
         const parts = order.notes.split(' · ');
@@ -159,7 +159,7 @@ export function openKitchenOrderDetail(orderId) {
         } else {
             document.getElementById('ktToppingsContainer').style.display = 'none';
         }
-        
+
         document.getElementById('ktCoreSpecsContainer').style.display = 'block';
         notesBox.textContent = "No additional staff notes.";
     } else {
@@ -187,7 +187,7 @@ export async function updateStatusFromModal(newStatus) {
         closeKitchenOrderDetail();
         await syncOrders();
         renderKitchenQueue();
-        showToast(newStatus === 'done' ? `Order #${_currentKtOrderId} completed! ✓` : `Order #${_currentKtOrderId} is now being prepared`);
+        showToast(newStatus === 'done' ? `Order #${_currentKtOrderId} completed! ✓` : `Order is now being prepared`);
     } else {
         showToast('Failed to update status', true);
     }
@@ -199,7 +199,7 @@ export async function updateQueueOrderStatus(orderId, newStatus) {
         await syncOrders(); // Refresh from DB
         renderKitchenQueue();
         if (newStatus === 'done') {
-            showToast(`Order #${orderId} completed!`);
+            showToast(`Order completed!`);
         }
     } else {
         showToast('Failed to update status', true);

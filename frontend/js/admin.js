@@ -19,7 +19,7 @@ export function renderAdminInventory() {
     container.innerHTML = '';
 
     if (menu.length === 0) {
-        container.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">📦</div><div>No menu items loaded.</div></div>`;
+        container.innerHTML = `<div class="cart-empty"><div>No menu items loaded.</div></div>`;
         return;
     }
 
@@ -47,7 +47,7 @@ export function renderAdminInventory() {
                 <div class="inv-card-price">${item.price ? item.price.toLocaleString('vi-VN') + 'đ' : '—'}</div>
                 <button class="inv-toggle-btn ${isOut ? 'inv-toggle-btn--out' : 'inv-toggle-btn--in'}"
                         onclick="toggleStock('${item.name.replace(/'/g, "\\'")}')">
-                    ${isOut ? '🔴 Mark as Available' : '✅ Mark Out of Stock'}
+                    ${isOut ? 'Mark as Available' : 'Mark Out of Stock'}
                 </button>
             </div>
         `;
@@ -162,7 +162,7 @@ export function renderKitchen() {
 
             buckets[type][col].forEach(order => {
                 const paidClass = order.paymentStatus === 'paid' ? 'paid' : 'unpaid';
-                const paidLabel = order.paymentStatus === 'paid' ? '✓ PAID' : '⚠ UNPAID';
+                const paidLabel = order.paymentStatus === 'paid' ? 'PAID' : 'UNPAID';
                 const normStatus = normalizeStatus(order.status);
                 const minutesAgo = Math.max(0, Math.round((Date.now() - order.createdAt) / 60000));
                 const timeLabel = minutesAgo === 0 ? 'Just now' : minutesAgo + ' min ago';
@@ -174,11 +174,11 @@ export function renderKitchen() {
                 // Determine next action button
                 let nextBtn = '';
                 if (normStatus === 'new') {
-                    nextBtn = `<button class="order-action-btn prep-btn" onclick="updateOrderStatus(${order.id}, 'prep')">▶ Start Prep</button>`;
+                    nextBtn = `<button class="order-action-btn prep-btn" onclick="updateOrderStatus(${order.id}, 'prep')">Start Prep</button>`;
                 } else if (normStatus === 'prep') {
-                    nextBtn = `<button class="order-action-btn done-btn" onclick="updateOrderStatus(${order.id}, 'done')">✓ Mark Done</button>`;
+                    nextBtn = `<button class="order-action-btn done-btn" onclick="updateOrderStatus(${order.id}, 'done')">Mark Done</button>`;
                 } else {
-                    nextBtn = `<span class="order-completed-label">✔ Completed</span>`;
+                    nextBtn = `<span class="order-completed-label">Completed</span>`;
                 }
 
                 const card = document.createElement('div');

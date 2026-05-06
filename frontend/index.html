@@ -132,7 +132,6 @@
     <div class="order-confirm-backdrop" id="orderConfirmBackdrop"></div>
     <div class="order-confirm-modal" id="orderConfirmModal" role="dialog" aria-modal="true"
         aria-labelledby="orderConfirmTitle">
-        <div class="divider-kanji">⚠</div>
         <h3 id="orderConfirmTitle">Send order to kitchen?</h3>
         <p>
             After confirming, your order is sent directly to the kitchen and cannot be changed.
@@ -148,7 +147,6 @@
     <div class="order-confirm-backdrop" id="orderCancelBackdrop" onclick="closeCancelModal()"></div>
     <div class="order-confirm-modal" id="orderCancelModal" role="dialog" aria-modal="true"
         aria-labelledby="orderCancelTitle">
-        <div class="divider-kanji">⚠</div>
         <h3 id="orderCancelTitle">Cancel this order?</h3>
         <p>This action cannot be undone. You will lose the items in this order.</p>
         <div class="order-confirm-actions">
@@ -156,6 +154,9 @@
             <button class="order-cancel-btn" id="orderCancelNo" onclick="closeCancelModal()">No</button>
         </div>
     </div>
+
+    <!-- Mobile nav backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileMenu()"></div>
 
     <nav>
         <div class="brand">
@@ -165,15 +166,76 @@
                 <span class="brand-sub">RAMEN</span>
             </div>
         </div>
-        <div class="nav-links">
-            <a href="#" class="active" onclick="showPage('home', this)">Home</a>
-            <a href="#" onclick="showPage('menu', this)">Menu</a>
-            <a href="#" onclick="showPage('order', this)">Order</a>
-            <a href="#" onclick="showPage('status', this)">Status</a>
-            <a href="#" onclick="showPage('kitchen', this)">Kitchen</a>
-            <a href="#" onclick="showPage('admin-login', this)">Admin</a>
+
+        <!-- Desktop nav links -->
+        <div class="nav-links" id="navLinks">
+            <a href="#" class="active" onclick="showPage('home', this); closeMobileMenu()">Home</a>
+            <a href="#" onclick="showPage('menu', this); closeMobileMenu()">Menu</a>
+            <a href="#" onclick="showPage('order', this); closeMobileMenu()">Order</a>
+            <a href="#" onclick="showPage('status', this); closeMobileMenu()">Status</a>
+            <a href="#" onclick="showPage('kitchen', this); closeMobileMenu()">Kitchen</a>
+            <a href="#" onclick="showPage('admin-login', this); closeMobileMenu()">Admin</a>
         </div>
+
+        <!-- Burger button — mobile only, no icons -->
+        <button class="burger-btn" id="burgerBtn" onclick="toggleMobileMenu()" aria-label="Open menu" aria-expanded="false">
+            <span class="burger-bar"></span>
+            <span class="burger-bar"></span>
+            <span class="burger-bar"></span>
+        </button>
     </nav>
+
+    <!-- Mobile slide-in drawer -->
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="mobile-drawer-header">
+            <div class="brand" style="color:#fff;">
+                <div class="brand-icon">🍜</div>
+                <div>
+                    <div>01-Wantantan</div>
+                    <span class="brand-sub">RAMEN</span>
+                </div>
+            </div>
+            <button class="mobile-drawer-close" onclick="closeMobileMenu()">
+                <span></span><span></span>
+            </button>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="#" onclick="showPage('home', document.querySelector('.nav-links a:nth-child(1)')); closeMobileMenu()">Home</a>
+            <a href="#" onclick="showPage('menu', document.querySelector('.nav-links a:nth-child(2)')); closeMobileMenu()">Menu</a>
+            <a href="#" onclick="showPage('order', document.querySelector('.nav-links a:nth-child(3)')); closeMobileMenu()">Order</a>
+            <a href="#" onclick="showPage('status', document.querySelector('.nav-links a:nth-child(4)')); closeMobileMenu()">Status</a>
+            <a href="#" onclick="showPage('kitchen', document.querySelector('.nav-links a:nth-child(5)')); closeMobileMenu()">Kitchen</a>
+            <a href="#" onclick="showPage('admin-login', document.querySelector('.nav-links a:nth-child(6)')); closeMobileMenu()">Admin</a>
+        </nav>
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const drawer = document.getElementById('mobileDrawer');
+            const backdrop = document.getElementById('mobileNavBackdrop');
+            const btn = document.getElementById('burgerBtn');
+            const isOpen = drawer.classList.contains('open');
+            if (isOpen) {
+                closeMobileMenu();
+            } else {
+                drawer.classList.add('open');
+                backdrop.classList.add('open');
+                btn.classList.add('open');
+                btn.setAttribute('aria-expanded', 'true');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function closeMobileMenu() {
+            const drawer = document.getElementById('mobileDrawer');
+            const backdrop = document.getElementById('mobileNavBackdrop');
+            const btn = document.getElementById('burgerBtn');
+            drawer.classList.remove('open');
+            backdrop.classList.remove('open');
+            btn.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+    </script>
 
     <div class="page active" id="page-home">
 
@@ -264,7 +326,6 @@
                 <button class="filter-tab" data-category="drinks" onclick="setFilter(this)">Drinks</button>
             </div>
             <div class="filter-search">
-                <span>🔍</span>
                 <input type="text" placeholder="Search menu..." id="menuSearch" oninput="filterMenuBySearch()">
             </div>
         </div>
@@ -310,7 +371,6 @@
                         <tr>
                             <td colspan="5">
                                 <div class="cart-empty">
-                                    <div class="cart-empty-icon">🍜</div>
                                     <div>Your order is empty.</div>
                                     <div style="margin-top:6px; font-size:11px; color:#999;">Go to the menu to add
                                         items.</div>
@@ -336,7 +396,6 @@
                 </p>
 
                 <div class="pay-method active" data-pay="paid" onclick="selectPay(this)">
-                    <span class="pay-icon">💳</span>
                     <div>
                         <div class="pay-label">Card / QR Payment</div>
                         <div style="font-size:11px; color:#888;">Pay online at this step</div>
@@ -345,7 +404,6 @@
                 </div>
 
                 <div class="pay-method" data-pay="unpaid" onclick="selectPay(this)">
-                    <span class="pay-icon">💵</span>
                     <div>
                         <div class="pay-label">Cash at Counter</div>
                         <div style="font-size:11px; color:#888;">Pay when picking up or after dining</div>
@@ -384,7 +442,6 @@
             
             <div id="statusListContainer">
                 <div class="cart-empty">
-                    <div class="cart-empty-icon">⏳</div>
                     <div>You have no active orders.</div>
                 </div>
             </div>
@@ -393,7 +450,6 @@
 
     <div class="page" id="page-admin-login">
         <div class="admin-login-box">
-            <div class="brand-icon" style="margin: 0 auto 15px;">🔒</div>
             <h2 style="color:white; font-family:var(--font-display); margin-bottom:20px;">Staff Access</h2>
             <input type="password" class="admin-input" id="staffPin" placeholder="Enter PIN (Demo: 1234)">
             <button class="hero-btn" style="width:100%" onclick="checkAdminAccess()">Login</button>
@@ -429,7 +485,7 @@
 
             <div class="kitchen-header">
                 <div>
-                    <div class="kitchen-title">🍳 Kitchen Display</div>
+                    <div class="kitchen-title">Kitchen Display</div>
                     <div style="font-size:12px; color:var(--mid); margin-top:3px;">
                         01-Wantantan Ramen · Real-time order management
                     </div>
@@ -473,20 +529,20 @@
 
             <div class="board-group">
                 <div class="board-group-title">
-                    <span>🧃 Drinks</span>
+                    <span>Drinks</span>
                     <span class="board-group-subtitle">Bar Station</span>
                 </div>
                 <div class="board-columns">
                     <div>
-                        <div class="col-header new-hd">🔴 New Orders <span class="col-badge" id="drinks-new-badge">0</span></div>
+                        <div class="col-header new-hd">New Orders <span class="col-badge" id="drinks-new-badge">0</span></div>
                         <div class="column" id="drinks-new"></div>
                     </div>
                     <div>
-                        <div class="col-header prep-hd">🟡 In Preparation <span class="col-badge" id="drinks-prep-badge">0</span></div>
+                        <div class="col-header prep-hd">In Preparation <span class="col-badge" id="drinks-prep-badge">0</span></div>
                         <div class="column" id="drinks-prep"></div>
                     </div>
                     <div>
-                        <div class="col-header done-hd">🟢 Completed <span class="col-badge" id="drinks-done-badge">0</span></div>
+                        <div class="col-header done-hd">Completed <span class="col-badge" id="drinks-done-badge">0</span></div>
                         <div class="column" id="drinks-done"></div>
                     </div>
                 </div>
@@ -494,20 +550,20 @@
 
             <div class="board-group">
                 <div class="board-group-title">
-                    <span>🍜 Food</span>
+                    <span>Food</span>
                     <span class="board-group-subtitle">Kitchen · Mains, Sides &amp; Desserts</span>
                 </div>
                 <div class="board-columns">
                     <div>
-                        <div class="col-header new-hd">🔴 New Orders <span class="col-badge" id="food-new-badge">0</span></div>
+                        <div class="col-header new-hd">New Orders <span class="col-badge" id="food-new-badge">0</span></div>
                         <div class="column" id="food-new"></div>
                     </div>
                     <div>
-                        <div class="col-header prep-hd">🟡 In Preparation <span class="col-badge" id="food-prep-badge">0</span></div>
+                        <div class="col-header prep-hd">In Preparation <span class="col-badge" id="food-prep-badge">0</span></div>
                         <div class="column" id="food-prep"></div>
                     </div>
                     <div>
-                        <div class="col-header done-hd">🟢 Completed <span class="col-badge" id="food-done-badge">0</span></div>
+                        <div class="col-header done-hd">Completed <span class="col-badge" id="food-done-badge">0</span></div>
                         <div class="column" id="food-done"></div>
                     </div>
                 </div>
@@ -583,7 +639,7 @@
                 <div class="kt-label">Update Status</div>
                 <div style="display:flex; gap:10px; margin-top:4px;">
                     <button class="order-action-btn prep-btn" style="flex:1; padding:12px; font-size:13px;"
-                        onclick="window._ktUpdateStatus('prep')">▶ Start Preparation</button>
+                        onclick="window._ktUpdateStatus('prep')">Start Preparation</button>
                     <button class="order-action-btn done-btn" style="flex:1; padding:12px; font-size:13px;"
                         onclick="window._ktUpdateStatus('done')">✓ Mark as Done</button>
                 </div>

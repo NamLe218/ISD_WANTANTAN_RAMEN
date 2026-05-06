@@ -133,7 +133,189 @@ footer a:hover {
     letter-spacing: 1px;
 }
 
+/* ─── BURGER BUTTON (mobile only) ─── */
+.burger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1.5px solid #3a3a3a;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 8px;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s;
+    z-index: 110;
+}
+
+.burger-btn:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: #555;
+}
+
+.burger-bar {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #ccc;
+    border-radius: 2px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease,
+                width 0.3s ease;
+    transform-origin: center;
+}
+
+/* Animate bars into X when open */
+.burger-btn.open .burger-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.burger-btn.open .burger-bar:nth-child(2) {
+    opacity: 0;
+    width: 0;
+}
+.burger-btn.open .burger-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ─── MOBILE DRAWER ─── */
+.mobile-nav-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-nav-backdrop.open {
+    opacity: 1;
+}
+
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--dark2);
+    border-right: 1px solid #2e2e2e;
+    z-index: 201;
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.mobile-drawer.open {
+    transform: translateX(0);
+}
+
+.mobile-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #2e2e2e;
+    height: 64px;
+    flex-shrink: 0;
+}
+
+/* Close button — two plain spans forming an X */
+.mobile-drawer-close {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1.5px solid #3a3a3a;
+    border-radius: 9px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.mobile-drawer-close:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+.mobile-drawer-close span {
+    display: block;
+    position: absolute;
+    width: 16px;
+    height: 2px;
+    background: #aaa;
+    border-radius: 2px;
+    top: 50%;
+    left: 50%;
+}
+
+.mobile-drawer-close span:nth-child(1) {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+.mobile-drawer-close span:nth-child(2) {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Nav links inside drawer */
+.mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 12px;
+    gap: 4px;
+}
+
+.mobile-nav-links a {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #aaa;
+    text-decoration: none;
+    padding: 13px 16px;
+    border-radius: 12px;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.3px;
+    font-family: var(--font-body);
+}
+
+.mobile-nav-links a:hover,
+.mobile-nav-links a.active {
+    background: var(--crimson);
+    color: white;
+}
+
 /* ─── RESPONSIVE ─── */
+@media (max-width: 639px) {
+    .nav-links {
+        display: none;
+    }
+
+    .burger-btn {
+        display: flex;
+    }
+
+    .mobile-nav-backdrop {
+        display: block;
+        pointer-events: none;
+    }
+
+    .mobile-nav-backdrop.open {
+        pointer-events: auto;
+    }
+}
+
+@media (min-width: 640px) {
+    .mobile-drawer,
+    .mobile-nav-backdrop {
+        display: none !important;
+    }
+}
+
 @media (min-width: 768px) {
     nav {
         padding: 0 36px;

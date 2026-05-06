@@ -175,7 +175,6 @@ export function updateCartUI() {
         body.innerHTML = `
       <tr><td colspan="5">
         <div class="cart-empty">
-          <div class="cart-empty-icon">🍜</div>
           <div>Your order is empty.</div>
           <div style="margin-top:6px; font-size:11px; color:#999;">Go to the menu to add items.</div>
         </div>
@@ -244,14 +243,14 @@ export function renderOrderStatus() {
     el.innerHTML = '';
     
     if (!currentTable) {
-        renderErrorState(el, 'Session Expired', 'Your dining session has ended. Please scan the QR code at your table to start a new order.', '🔐');
+        renderErrorState(el, 'Session Expired', 'Your dining session has ended. Please scan the QR code at your table to start a new order.', '');
         return;
     }
 
     const tableOrders = orders.filter(o => o.table === currentTable).sort((a, b) => b.createdAt - a.createdAt);
     
     if (tableOrders.length === 0) {
-        renderErrorState(el, 'No Active Orders', 'You haven\'t placed any orders yet. Head over to our menu to discover our authentic ramen bowls!', '🕒');
+        renderErrorState(el, 'No Active Orders', 'You haven\'t placed any orders yet. Head over to our menu to discover our authentic ramen bowls!', '');
         return;
     }
     
@@ -269,7 +268,7 @@ export function renderOrderStatus() {
         else if (normStatus === 'done') { statusText = 'Ready to Serve'; isActive = false; }
         
         if (normStatus === 'done' && !order.customerNotified) {
-            showToast('🍜 Your ' + order.item + ' is ready!', false);
+            showToast('Your ' + order.item + ' is ready!', false);
             order.customerNotified = true;
         }
 
