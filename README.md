@@ -221,6 +221,5 @@ GET /api/health
 | Order Status | Customer | Real-time order tracker with cancel option |
 | Kitchen | Staff | Kanban queue (Food & Drinks) with status actions |
 | Admin | Staff (PIN: `1234`) | Inventory toggles + kitchen counters |
-| Delivery | Staff | Board of ready orders to be delivered |
 
 > **Note:** The default admin PIN is `1234`. Change this for any production deployment.
